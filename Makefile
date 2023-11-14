@@ -57,11 +57,12 @@ CFLAGS += -fdata-sections
 CFLAGS += -g
 CFLAGS += -O0
 CFLAGS += -Wl,--print-memory-usage
-CFLAGS += -T soc/HPM6750/toolchains/gcc/ram.ld 
-# CFLAGS += -flto
+CFLAGS += -T soc/HPM6750/toolchains/gcc/ram.ld
+CFLAGS += -lm
+CFLAGS += -flto
 # CFLAGS += -fwhole-program
-# CFLAGS += -fno-use-linker-plugin
-# CFLAGS += -ggdb3
+CFLAGS += -fno-use-linker-plugin
+CFLAGS += -ggdb3
 
 CFLAGS += -Iarch
 CFLAGS += -Iboard
