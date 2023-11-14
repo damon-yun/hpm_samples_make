@@ -17,13 +17,14 @@ AS=$(CROSS_PREFIX)as
 LD=$(CROSS_PREFIX)ld
 OBJCOPY=$(CROSS_PREFIX)objcopy
 OBJDUMP=$(CROSS_PREFIX)objdump
+SIZE=$(CROSS_PREFIX)size
 
 # Source files
 C_SRCS=
 ASM_SRCS=
 OBJS=
 
-target-y=$(OUT_DIR)demo.elf
+target-y=$(OUT_DIR)demo.bin
 
 dirs-y=
 
@@ -37,7 +38,11 @@ dirs-y += soc/HPM6750/toolchains
 dirs-y += soc/HPM6750/toolchains/gcc
 
 CFLAGS += -g
-CFLAGS += -mcpu=d45
+
+# CFLAGS += -mcpu=d45
+CFLAGS += -mabi=ilp32f
+CFLAGS += -march=rv32imafc
+
 CFLAGS += -static
 CFLAGS += -nostartfiles
 CFLAGS += -Wl,--gc-sections
@@ -50,7 +55,7 @@ CFLAGS += -fno-builtin
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -g
-CFLAGS += -O2
+CFLAGS += -O0
 CFLAGS += -Wl,--print-memory-usage
 CFLAGS += -T soc/HPM6750/toolchains/gcc/ram.ld 
 # CFLAGS += -flto
@@ -136,6 +141,11 @@ $(OUT_DIR)%.o: %.S
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
+$(OUT_DIR)demo.bin: $(OUT_DIR)demo.elf
+	@echo "Creating bin file $@"
+	@$(SIZE) $<
+	@$(OBJCOPY) -O binary $< $@
+	
 $(OUT_DIR)demo.elf: $(OBJS)
 	@echo "Linking $@"
 	@$(CC) $(OBJS) $(CFLAGS) -o $@
